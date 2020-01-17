@@ -3,6 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
+import Menubar from 'primevue/menubar';
+
 
 import 'primevue/resources/themes/nova-light/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -12,6 +14,7 @@ Vue.config.productionTip = false;
 
 Vue.component("InputText", InputText)
 Vue.component("Password", Password)
+Vue.component("Menubar", Menubar)
 new Vue({
   router,
   render: h => h(App)
