@@ -4,6 +4,10 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
       <router-link to="/login">Login</router-link>
+      <link
+        href="https://unpkg.com/primeicons/primeicons.css "
+        rel="stylesheet"
+      />
     </div>
     <router-view />
   </div>
