@@ -1,24 +1,17 @@
 <template>
   <div id="app">
-    <NavBar></NavBar>
     <router-view />
   </div>
 </template>
 
-<script>
-  import NavBar from "@/components/NavBar";
-  export default {
-    name: "App",
-    components: {
-      NavBar
-    },
-    data(){
-      return{
-
-      }
-    }
-
+<script lang="ts">
+export default {
+  name: "App",
+  components: {},
+  data() {
+    return {};
   }
+};
 </script>
 
 <style lang="scss">
@@ -42,6 +35,8 @@
     }
   }
 }
+
+body {
+  margin: 0px;
+}
 </style>
-
-

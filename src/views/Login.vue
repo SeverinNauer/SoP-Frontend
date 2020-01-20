@@ -1,32 +1,47 @@
 <template>
-  <div style="display: inline-block;">
-    <div class="p-col-12 p-md-4" style="padding-top: 55%">
-      <div class="p-inputgroup">
-        <span class="p-inputgroup-addon">
-          <i class="pi pi-user"></i>
-        </span>
-        <InputText placeholder="Username" />
-      </div>
-    </div>
-
-    <div class="p-col-12 p-md-4" style="padding-top: 2%">
-      <div class="p-inputgroup">
-        <span class="p-inputgroup-addon">
-          <i class="pi pi-lock"></i>
-        </span>
-        <Password v-model="password" placeholder="Password" />
-      </div>
-    </div>
-    <div style="padding-top: 8%">
-      <Button label="Login" class="p-button-raised" />
-    </div>
+  <div class="root">
     <div>
-      <p>Don't have an account? <a>Register</a></p>
+      <div class="p-col-12 p-md-4">
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-user"></i>
+          </span>
+          <InputText placeholder="Username" v-model="username" />
+        </div>
+      </div>
+
+      <div class="p-col-12 p-md-4 topMargin">
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-lock"></i>
+          </span>
+          <Password
+            v-model="password"
+            placeholder="Password"
+            :feedback="false"
+          />
+        </div>
+      </div>
+      <div class="topMargin">
+        <Button label="Login" class="p-button-raised" v-on:click="login" />
+      </div>
+      <div>
+        <p>
+          Don't have an account?
+          <router-link to="/register">Register</router-link>
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { post } from "@/services/fetchservice";
+
+interface IUser {
+  username: string;
+  password: string;
+}
 export default {
   name: "Login",
   data() {
@@ -34,8 +49,33 @@ export default {
       username: "",
       password: ""
     };
+  },
+  methods: {
+    async login() {
+      const response = await post<IUser, string>(
+        "Account/login",
+        {
+          username: this.username,
+          password: this.password
+        },
+        false
+      );
+      if (response.type === "success") {
+        localStorage.setItem("jwt", response.response as string);
+        this.$router.push("/");
+      }
+    }
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.root {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+.topMargin {
+  margin-top: 10px;
+}
+</style>
