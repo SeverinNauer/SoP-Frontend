@@ -25,7 +25,7 @@ export const store = {
       return selectedPassword;
     },
     set selectedPassword(pw: IPasswordEntry | null) {
-      selectedPassword = pw;
+      selectedPassword = pw ? { ...pw } : null;
       this.passwordIsNew = false;
     },
     passwordIsNew: false
@@ -45,7 +45,7 @@ export const store = {
     this.state.selectedCategory = category;
     this.state.selectedPassword = null;
   },
-  setSelectedPassword(password: IPasswordEntry, isNew: boolean) {
+  setSelectedPassword(password: IPasswordEntry | null, isNew: boolean) {
     this.state.selectedPassword = password;
     this.state.passwordIsNew = isNew;
   }

@@ -1,9 +1,12 @@
 <template>
   <div class="appRoot">
-    <AppBar class="header" />
+    <AppBar class="header" :isMobile="isMobile" />
     <CategoryDrawer class="drawer" v-if="categoriesAreVisible" />
     <PasswordDrawer v-if="passwordsAreVisible" />
-    <PasswordView v-if="storedData.selectedPassword" />
+    <PasswordView
+      v-if="storedData.selectedPassword"
+      :key="storedData.selectedPassword.id"
+    />
   </div>
 </template>
 
@@ -17,58 +20,59 @@ import { get } from "../services/fetchservice";
 import { ICategory } from "@/Models/ICategory";
 import { fetchCategories } from "@/services/categoryService";
 import Vue from "vue";
+import Component from "vue-class-component";
 
-export default Vue.extend({
-  name: "home",
+@Component({
   components: {
-    AppBar,
-    CategoryDrawer,
-    PasswordDrawer,
-    PasswordView
-  },
+    CategoryDrawer: CategoryDrawer,
+    PasswordDrawer: PasswordDrawer,
+    PasswordView: PasswordView,
+    AppBar: AppBar
+  }
+})
+export default class Home extends Vue {
   mounted() {
     fetchCategories();
     this.$nextTick(() => {
       window.addEventListener("resize", this.onResize);
     });
-  },
+  }
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
-  },
-  data() {
-    return {
-      storedData: store.state,
-      windowWidth: window.innerWidth
-    };
-  },
-  methods: {
-    onResize() {
-      this.windowWidth = window.innerWidth;
-    }
-  },
-  computed: {
-    categoriesAreVisible: function() {
-      const small = this.windowWidth <= 800;
-      if (!small) {
-        return true;
-      }
-      if (store.state.selectedCategory === null) {
-        return true;
-      }
-      return false;
-    },
-    passwordsAreVisible: function() {
-      const small = this.windowWidth <= 800;
-      if (!small) {
-        return true;
-      }
-      if (store.state.selectedPassword === null) {
-        return true;
-      }
-      return false;
-    }
   }
-});
+
+  storedData = store.state;
+  windowWidth = window.innerWidth;
+
+  onResize() {
+    this.windowWidth = window.innerWidth;
+  }
+
+  get categoriesAreVisible() {
+    const small = this.windowWidth <= 800;
+    if (!small) {
+      return true;
+    }
+    if (store.state.selectedCategory === null) {
+      return true;
+    }
+    return false;
+  }
+  get passwordsAreVisible() {
+    const small = this.windowWidth <= 800;
+    if (!small) {
+      return true;
+    }
+    if (store.state.selectedPassword === null) {
+      return true;
+    }
+    return false;
+  }
+  get isMobile() {
+    console.log("isMobile");
+    return this.windowWidth <= 800;
+  }
+}
 </script>
 
 <style scoped>

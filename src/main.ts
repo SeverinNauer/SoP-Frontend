@@ -9,6 +9,7 @@ import Toolbar from "primevue/toolbar";
 import Listbox from "primevue/listbox";
 import Dialog from "primevue/dialog";
 import Textarea from "primevue/textarea";
+import ContextMenu from "primevue/contextmenu";
 
 import "primevue/resources/themes/nova-light/theme.css";
 import "primevue/resources/primevue.min.css";
@@ -25,6 +26,7 @@ Vue.component("Toolbar", Toolbar);
 Vue.component("Listbox", Listbox);
 Vue.component("Dialog", Dialog);
 Vue.component("Textarea", Textarea);
+Vue.component("ContextMenu", ContextMenu);
 
 new Vue({
   router,

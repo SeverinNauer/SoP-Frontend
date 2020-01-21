@@ -1,8 +1,8 @@
 <template>
-  <span class="p-float-label input">
-    <InputText :id="value" :type="inputType" v-model="inputVal" class="input" />
-    <label :for="value">{{ label }}</label>
-  </span>
+  <div>
+    <p class="textAreaLabel">{{ label }}</p>
+    <InputText :type="inputType" v-model="inputVal" class="input" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -13,7 +13,6 @@ import Component from "vue-class-component";
   props: {
     label: String,
     value: String,
-    id: String,
     type: String
   }
 })
@@ -33,5 +32,12 @@ export default class CustomInput extends Vue {
 <style scoped>
 .input {
   width: 100%;
+}
+
+.textAreaLabel {
+  text-align: left;
+  margin: 5px;
+  margin-left: 0px;
+  color: rgb(0, 0, 0, 0.55);
 }
 </style>

@@ -1,12 +1,15 @@
 <template>
   <div class="sidebar">
-    <Listbox
-      v-if="storedData.selectedCategory"
-      class="listbox"
-      :options="storedData.selectedCategory.passwords"
-      optionLabel="title"
-      v-model="storedData.selectedPassword"
-    />
+    <div>
+      <h2 v-if="storedData.selectedCategory" class="drawerTitle">Passwords</h2>
+      <Listbox
+        v-if="storedData.selectedCategory"
+        class="listbox"
+        :options="storedData.selectedCategory.passwords"
+        optionLabel="title"
+        v-model="storedData.selectedPassword"
+      />
+    </div>
     <Button
       v-if="storedData.selectedCategory"
       icon="pi pi-plus"
@@ -43,6 +46,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  text-align: left;
 }
 
 .listbox {
@@ -54,5 +58,10 @@ export default {
   margin-left: auto;
   margin-right: 10px;
   margin-bottom: 10px;
+}
+
+.drawerTitle {
+  text-align: left;
+  margin-left: 12px;
 }
 </style>

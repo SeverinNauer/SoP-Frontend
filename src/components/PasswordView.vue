@@ -1,8 +1,8 @@
 <template>
   <div class="root p-grid">
     <div class=" p-col-12 p-md-12 p-lg-10 p-xl-6">
-      <h2 class="title">
-        {{ storedData.passwordIsNew ? "New Password" : password.title }}
+      <h2 class="title" v-if="storedData.passwordIsNew">
+        New Password
       </h2>
       <div class="inputCont">
         <CustomInput
@@ -22,7 +22,6 @@
           id="password"
           v-model="password.password"
           class="oneInput"
-          type="password"
         />
         <CustomInput
           label="Url"
@@ -35,45 +34,40 @@
           v-model="password.description"
           class="area"
         />
-        <CustomInput
-          label="Expiration date"
-          id="date"
-          v-model="password.expirationDate"
-          class="oneInput"
-        />
       </div>
       <Button label="Save" v-on:click="save" class="saveButton" />
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { store } from "@/store/store";
 import CustomInput from "@/components/form/CustomInput.vue";
 import CustomTextArea from "@/components/form/CustomTextArea.vue";
+import { IPasswordEntry } from "@/Models/IPasswordEntry";
+import Vue from "vue";
+import Component from "vue-class-component";
 
-export default {
-  name: "PasswordView",
+@Component({
   components: {
-    CustomInput,
-    CustomTextArea
-  },
-  data() {
-    return {
-      storedData: store.state
-    };
-  },
-  methods: {
-    save: function() {
-      store.state.selectedPassword = this.password;
-    }
-  },
-  computed: {
-    password() {
-      return this.storedData.selectedPassword;
-    }
+    CustomInput: CustomInput,
+    CustomTextArea: CustomTextArea
   }
-};
+})
+export default class PasswordView extends Vue {
+  storedData = store.state;
+
+  mounted() {
+    console.log("mounted");
+  }
+  save() {
+    console.log(this.password);
+    store.state.selectedPassword = this.password;
+  }
+  get password() {
+    return this.storedData.selectedPassword;
+  }
+}
 </script>
 
 <style scoped>
@@ -88,7 +82,7 @@ export default {
 }
 
 .oneInput {
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .saveButton {
