@@ -1,5 +1,5 @@
 import Vue from "vue";
-import App from "@/App";
+import App from "./App.vue";
 import router from "./router";
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";

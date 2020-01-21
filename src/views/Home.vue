@@ -16,8 +16,9 @@ import PasswordView from "@/components/PasswordView.vue";
 import { get } from "../services/fetchservice";
 import { ICategory } from "@/Models/ICategory";
 import { fetchCategories } from "@/services/categoryService";
+import Vue from "vue";
 
-export default {
+export default Vue.extend({
   name: "home",
   components: {
     AppBar,
@@ -37,7 +38,7 @@ export default {
   data() {
     return {
       storedData: store.state,
-      windowWidth: 0
+      windowWidth: window.innerWidth
     };
   },
   methods: {
@@ -67,7 +68,7 @@ export default {
       return false;
     }
   }
-};
+});
 </script>
 
 <style scoped>

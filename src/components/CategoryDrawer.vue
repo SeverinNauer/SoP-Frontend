@@ -34,6 +34,7 @@ import CustomInput from "@/components/form/CustomInput.vue";
 import CustomTextArea from "@/components/form/CustomTextArea.vue";
 import { post } from "../services/fetchservice";
 import { fetchCategories } from "../services/categoryService";
+import Vue from "vue";
 
 interface ICategoryCreate {
   categoryId: number;
@@ -41,7 +42,7 @@ interface ICategoryCreate {
   description: string;
 }
 
-export default {
+export default Vue.extend({
   name: "CategoryDrawer",
   components: { CustomInput, CustomTextArea },
   data() {
@@ -76,7 +77,7 @@ export default {
       this.dialogOpen = false;
     }
   }
-};
+});
 </script>
 
 <style scoped>

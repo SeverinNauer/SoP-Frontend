@@ -37,12 +37,13 @@
 
 <script lang="ts">
 import { post } from "@/services/fetchservice";
+import Vue from "vue";
 
 interface IUser {
   username: string;
   password: string;
 }
-export default {
+export default Vue.extend({
   name: "Login",
   data() {
     return {
@@ -66,7 +67,7 @@ export default {
       }
     }
   }
-};
+});
 </script>
 
 <style scoped>

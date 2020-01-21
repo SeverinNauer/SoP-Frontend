@@ -7,20 +7,22 @@
 
 <script lang="ts">
 import Vue from "vue";
-export default Vue.extend({
-  name: "CustomTextArea",
-  props: ["label", "value"] as [string, string],
-  computed: {
-    inputVal: {
-      get() {
-        return this.value;
-      },
-      set(val) {
-        this.$emit("input", val);
-      }
-    }
+import { Component, Prop } from "vue-property-decorator";
+
+@Component({
+  props: {
+    label: String,
+    value: String
   }
-});
+})
+export default class CustomTextArea extends Vue {
+  get inputVal() {
+    return this.$props.value;
+  }
+  set(val: string) {
+    this.$emit("input", val);
+  }
+}
 </script>
 
 <style scoped>

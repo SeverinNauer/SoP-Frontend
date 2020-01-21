@@ -7,23 +7,27 @@
 
 <script lang="ts">
 import Vue from "vue";
-export default Vue.extend({
-  name: "CustomInput",
-  props: ["label", "value", "id", "type"] as [string, string, string, string],
-  computed: {
-    inputVal: {
-      get() {
-        return this.value;
-      },
-      set(val) {
-        this.$emit("input", val);
-      }
-    },
-    inputType: function() {
-      return this.type || "text";
-    }
+import Component from "vue-class-component";
+
+@Component({
+  props: {
+    label: String,
+    value: String,
+    id: String,
+    type: String
   }
-});
+})
+export default class CustomInput extends Vue {
+  get inputVal() {
+    return this.$props.value;
+  }
+  set inputVal(val: string) {
+    this.$emit("input", val);
+  }
+  get inputType() {
+    return this.$props.type || "text";
+  }
+}
 </script>
 
 <style scoped>
