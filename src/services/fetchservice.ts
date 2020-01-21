@@ -43,6 +43,14 @@ export const post = async <TD, TR>(
   return await fetchMeth<TR>(request);
 };
 
+export const get = async <TR>(endpoint: string, authenticated: boolean) => {
+  let request = new Request(`${baseUrl}${endpoint}`, {
+    method: "GET",
+    headers: getHeaders(authenticated)
+  });
+  return await fetchMeth<TR>(request);
+};
+
 const fetchMeth = async <T>(request: Request) => {
   const response = await fetch(request);
   if (response.ok && response.status >= 200 && response.status < 300) {

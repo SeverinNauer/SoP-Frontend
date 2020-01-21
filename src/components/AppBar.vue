@@ -7,7 +7,12 @@
         style="margin-right: .25em"
         v-on:click="onLogoutClick"
       />
-      <Button v-else label="Login" class="p-button-success" v-on:click="onLoginClick" />
+      <Button
+        v-else
+        label="Login"
+        class="p-button-success"
+        v-on:click="onLoginClick"
+      />
     </template>
   </Toolbar>
 </template>
@@ -19,7 +24,10 @@ export default {
   name: "AppBar",
   components: {},
   mounted() {
-    store.setToken(localStorage.getItem("jwt"));
+    store.setToken(localStorage.getItem("jwt") || "");
+    if (!store.state.token) {
+      this.$router.push("/login");
+    }
   },
   data() {
     return {
@@ -32,6 +40,7 @@ export default {
     },
     onLogoutClick() {
       store.setToken("");
+      this.$router.push("/login");
     }
   }
 };
