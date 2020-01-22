@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     onAddPassword: function() {
-      store.setSelectedPassword({} as IPasswordEntry, true);
+      store.setSelectedPassword({} as IPasswordEntry);
     }
   }
 };

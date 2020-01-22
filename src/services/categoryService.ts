@@ -8,5 +8,16 @@ export const fetchCategories = async () => {
     if (response.type === "success") {
       store.setCategories(response.response as ICategory[]);
     }
+    return response;
+  }
+};
+
+export const fetchOneCategory = async (id: number) => {
+  if (store.state.token) {
+    const response = await get<ICategory>(
+      "Category/get?categoryId=" + id,
+      true
+    );
+    return response;
   }
 };
