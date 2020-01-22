@@ -77,7 +77,7 @@ export default class Home extends Vue {
 <style scoped>
 .appRoot {
   display: grid;
-  height: 100vh;
+  height: 100%;
   grid-template-rows: 50px auto;
   grid-template-columns: 250px 250px auto;
 }
@@ -95,7 +95,7 @@ export default class Home extends Vue {
 @media screen and (max-width: 800px) {
   .appRoot {
     display: grid;
-    height: 100vh;
+    height: 100%;
     grid-template-rows: 50px auto;
     grid-template-columns: 1fr;
   }
