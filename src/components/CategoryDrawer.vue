@@ -7,6 +7,7 @@
         :options="storedData.categories"
         optionLabel="title"
         v-model="storedData.selectedCategory"
+        data-key="id"
       >
         <template #option="cat">
           <div @contextmenu="onItemClick" :id="cat.option.id">
@@ -23,8 +24,8 @@
       :closable="false"
       class="addCatDialog"
     >
-      <CustomInput label="Title" v-model="newTitle" id="newTitle" />
-      <CustomTextArea v-model="newDescription" label="Description" />
+      <CustomInput label="Title" v-model="dialogItem.title" id="newTitle" />
+      <CustomTextArea v-model="dialogItem.description" label="Description" />
       <template #footer>
         <Button label="Add" v-on:click="onDialogClose(true)" />
         <Button
@@ -42,10 +43,11 @@
 import { store } from "@/store/store";
 import CustomInput from "@/components/form/CustomInput.vue";
 import CustomTextArea from "@/components/form/CustomTextArea.vue";
-import { post } from "../services/fetchservice";
+import { post, getToastObj, httpDelete, put } from "../services/fetchservice";
 import { fetchCategories } from "../services/categoryService";
 import Vue from "vue";
 import Component from "vue-class-component";
+import { ICategory } from "../Models/ICategory";
 
 interface ICategoryCreate {
   categoryId: number;
@@ -62,8 +64,8 @@ interface ICategoryCreate {
 export default class CategoryDrawer extends Vue {
   storedData = store.state;
   dialogOpen = false;
-  newTitle = "";
-  newDescription = "";
+
+  dialogItem = {} as ICategory;
   contextItem = -1;
   get items() {
     return [
@@ -74,7 +76,8 @@ export default class CategoryDrawer extends Vue {
       },
       {
         label: "Delete",
-        icon: "pi pi-fw pi-trash"
+        icon: "pi pi-fw pi-trash",
+        command: this.onDelete
       }
     ];
   }
@@ -82,21 +85,45 @@ export default class CategoryDrawer extends Vue {
   onOpenDialog() {
     this.dialogOpen = true;
   }
+
+  async createNew() {
+    return await post<ICategoryCreate, string>(
+      "Category/create",
+      {
+        categoryId: 0,
+        title: this.dialogItem.title,
+        description: this.dialogItem.title
+      },
+      true
+    );
+  }
+
+  async saveItem() {
+    return await put<ICategoryCreate, string>(
+      "Category/update",
+      {
+        categoryId: this.dialogItem.id,
+        title: this.dialogItem.title,
+        description: this.dialogItem.title
+      },
+      true
+    );
+  }
+
   async onDialogClose(result: boolean) {
     if (result) {
-      const response = await post<ICategoryCreate, string>(
-        "Category/create",
-        {
-          categoryId: 0,
-          title: this.newTitle,
-          description: this.newDescription
-        },
-        true
-      );
-      this.newDescription = "";
-      this.newTitle = "";
-      if (response.type === "success") {
-        fetchCategories();
+      let response = null;
+      if (this.dialogItem.id) {
+        response = await this.saveItem();
+      } else {
+        response = await this.createNew();
+      }
+      if (response) {
+        this.dialogItem = {} as ICategory;
+        if (response.type === "success") {
+          fetchCategories();
+        }
+        this.$toast.add(getToastObj(response));
       }
     }
     this.dialogOpen = false;
@@ -105,7 +132,27 @@ export default class CategoryDrawer extends Vue {
     (this.$refs.menu as any).show(event);
     this.contextItem = Number(event.target.id);
   }
-  onEdit() {}
+  onEdit() {
+    const listItem = this.storedData.categories.find(
+      cat => cat.id === this.contextItem
+    );
+    if (listItem) {
+      this.dialogItem = { ...listItem };
+      this.dialogOpen = true;
+    }
+  }
+  async onDelete() {
+    if (this.contextItem > 0) {
+      const res = await httpDelete<string>(
+        "Category/delete?categoryId=" + this.contextItem,
+        true
+      );
+      if (res.type === "success") {
+        fetchCategories();
+      }
+      this.$toast.add(getToastObj(res));
+    }
+  }
 }
 </script>
 

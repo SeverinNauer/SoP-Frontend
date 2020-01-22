@@ -1,7 +1,12 @@
 <template>
   <div>
     <p class="textAreaLabel">{{ label }}</p>
-    <InputText :type="inputType" v-model="inputVal" class="input" />
+    <InputText
+      :type="inputType"
+      v-model="inputVal"
+      class="input"
+      :disabled="disabled"
+    />
   </div>
 </template>
 
@@ -13,7 +18,8 @@ import Component from "vue-class-component";
   props: {
     label: String,
     value: String,
-    type: String
+    type: String,
+    disabled: Boolean
   }
 })
 export default class CustomInput extends Vue {

@@ -40,14 +40,35 @@ export const post = async <TD, TR>(
     body: JSON.stringify(data),
     headers: getHeaders(authenticated)
   });
-  // eslint-disable-next-line no-console
-  console.log(request);
+  return await fetchMeth<TR>(request);
+};
+export const put = async <TD, TR>(
+  endpoint: string,
+  data: TD,
+  authenticated: boolean
+) => {
+  let request = new Request(`${baseUrl}${endpoint}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+    headers: getHeaders(authenticated)
+  });
   return await fetchMeth<TR>(request);
 };
 
 export const get = async <TR>(endpoint: string, authenticated: boolean) => {
   let request = new Request(`${baseUrl}${endpoint}`, {
     method: "GET",
+    headers: getHeaders(authenticated)
+  });
+  return await fetchMeth<TR>(request);
+};
+
+export const httpDelete = async <TR>(
+  endpoint: string,
+  authenticated: boolean
+) => {
+  let request = new Request(`${baseUrl}${endpoint}`, {
+    method: "DELETE",
     headers: getHeaders(authenticated)
   });
   return await fetchMeth<TR>(request);

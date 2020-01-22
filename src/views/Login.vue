@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { post } from "@/services/fetchservice";
+import { post, getToastObj } from "@/services/fetchservice";
 import Vue from "vue";
 
 interface IUser {
@@ -64,6 +64,8 @@ export default Vue.extend({
       if (response.type === "success") {
         localStorage.setItem("jwt", response.response as string);
         this.$router.push("/");
+      } else {
+        this.$toast.add(getToastObj(response));
       }
     }
   }

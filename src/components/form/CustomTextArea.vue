@@ -1,7 +1,13 @@
 <template>
   <div>
     <p class="textAreaLabel">{{ label }}</p>
-    <Textarea v-model="inputVal" class="input" :autoResize="true" rows="4" />
+    <Textarea
+      v-model="inputVal"
+      class="input"
+      :autoResize="true"
+      rows="4"
+      :disabled="disabled"
+    />
   </div>
 </template>
 
@@ -12,14 +18,15 @@ import { Component, Prop } from "vue-property-decorator";
 @Component({
   props: {
     label: String,
-    value: String
+    value: String,
+    disabled: Boolean
   }
 })
 export default class CustomTextArea extends Vue {
   get inputVal() {
     return this.$props.value;
   }
-  set(val: string) {
+  set inputVal(val: string) {
     this.$emit("input", val);
   }
 }
