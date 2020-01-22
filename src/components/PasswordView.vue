@@ -57,11 +57,8 @@ import Component from "vue-class-component";
 export default class PasswordView extends Vue {
   storedData = store.state;
 
-  mounted() {
-    console.log("mounted");
-  }
+  mounted() {}
   save() {
-    console.log(this.password);
     store.state.selectedPassword = this.password;
   }
   get password() {

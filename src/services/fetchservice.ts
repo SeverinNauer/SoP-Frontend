@@ -16,7 +16,7 @@ interface IError {
   error: string;
 }
 
-interface IResponse<T> {
+export interface IResponse<T> {
   type: "success" | "error" | "serverError";
   response: string | T | IError;
 }
@@ -40,6 +40,8 @@ export const post = async <TD, TR>(
     body: JSON.stringify(data),
     headers: getHeaders(authenticated)
   });
+  // eslint-disable-next-line no-console
+  console.log(request);
   return await fetchMeth<TR>(request);
 };
 
@@ -69,4 +71,20 @@ const fetchMeth = async <T>(request: Request) => {
     type: "error",
     response: await getDataFromResponse(response)
   } as IResponse<T>;
+};
+
+export const getToastObj = (response: IResponse<string>) => {
+  if (response.type === "serverError") {
+    return {
+      severity: "error",
+      summary: "Server error",
+      detail: (response.response as IError).error,
+      life: 5000
+    };
+  }
+  return {
+    severity: response.type,
+    detail: response.response as string,
+    life: 3000
+  };
 };

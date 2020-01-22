@@ -6,11 +6,11 @@
           <span class="p-inputgroup-addon">
             <i class="pi pi-user"></i>
           </span>
-          <InputText placeholder="Username" />
+          <InputText v-model="username" placeholder="Username" />
         </div>
       </div>
 
-      <div class="p-col-12 p-md-4 topMargin">
+      <div class="p-col-12 p-md-4">
         <div class="p-inputgroup">
           <span class="p-inputgroup-addon">
             <i class="pi pi-lock"></i>
@@ -18,7 +18,7 @@
           <Password v-model="password" placeholder="Password" />
         </div>
       </div>
-      <div class="p-col-12 p-md-4 topMargin">
+      <div class="p-col-12 p-md-4">
         <div class="p-inputgroup">
           <span class="p-inputgroup-addon">
             <i class="pi pi-lock"></i>
@@ -27,7 +27,11 @@
         </div>
       </div>
       <div class="topMargin">
-        <Button label="Register" class="p-button-raised" />
+        <Button
+          label="Register"
+          class="p-button-raised"
+          v-on:click="onRegisterClicked"
+        />
       </div>
       <div>
         <p>
@@ -40,16 +44,44 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: "Register",
-  data() {
-    return {
-      username: "",
-      password: "",
-      passwordConfirm: ""
-    };
+import Component from "vue-class-component";
+import Vue from "vue";
+import { post, IResponse, getToastObj } from "../services/fetchservice";
+
+interface IUserCreate {
+  username: string;
+  password: string;
+}
+
+@Component
+export default class Register extends Vue {
+  username = "";
+  password = "";
+  passwordConfirm = "";
+
+  async onRegisterClicked() {
+    if (this.password !== this.passwordConfirm) {
+      this.$toast.add({
+        severity: "error",
+        detail: "Passwords don't match",
+        life: 3000
+      });
+      return;
+    }
+    const response = await post<IUserCreate, string>(
+      "Account/create",
+      {
+        username: this.username,
+        password: this.password
+      },
+      false
+    );
+    this.$toast.add(getToastObj(response));
+    if (response.type === "success") {
+      this.$router.push("/login");
+    }
   }
-};
+}
 </script>
 
 <style scoped>
@@ -59,6 +91,6 @@ export default {
   height: 100vh;
 }
 .topMargin {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 </style>

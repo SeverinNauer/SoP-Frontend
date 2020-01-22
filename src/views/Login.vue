@@ -10,7 +10,7 @@
         </div>
       </div>
 
-      <div class="p-col-12 p-md-4 topMargin">
+      <div class="p-col-12 p-md-4">
         <div class="p-inputgroup">
           <span class="p-inputgroup-addon">
             <i class="pi pi-lock"></i>

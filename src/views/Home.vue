@@ -69,7 +69,6 @@ export default class Home extends Vue {
     return false;
   }
   get isMobile() {
-    console.log("isMobile");
     return this.windowWidth <= 800;
   }
 }

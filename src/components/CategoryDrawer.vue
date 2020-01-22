@@ -102,13 +102,10 @@ export default class CategoryDrawer extends Vue {
     this.dialogOpen = false;
   }
   onItemClick(event: any) {
-    console.log(event);
     (this.$refs.menu as any).show(event);
     this.contextItem = Number(event.target.id);
   }
-  onEdit() {
-    console.log(this.contextItem);
-  }
+  onEdit() {}
 }
 </script>
 

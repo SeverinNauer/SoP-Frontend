@@ -10,6 +10,8 @@ import Listbox from "primevue/listbox";
 import Dialog from "primevue/dialog";
 import Textarea from "primevue/textarea";
 import ContextMenu from "primevue/contextmenu";
+import ToastService from "primevue/toastservice";
+import Toast from "primevue/toast";
 
 import "primevue/resources/themes/nova-light/theme.css";
 import "primevue/resources/primevue.min.css";
@@ -26,7 +28,9 @@ Vue.component("Toolbar", Toolbar);
 Vue.component("Listbox", Listbox);
 Vue.component("Dialog", Dialog);
 Vue.component("Textarea", Textarea);
+Vue.component("Toast", Toast);
 Vue.component("ContextMenu", ContextMenu);
+Vue.use(ToastService);
 
 new Vue({
   router,
