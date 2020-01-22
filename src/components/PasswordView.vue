@@ -17,13 +17,23 @@
           class="oneInput"
           :disabled="!editMode"
         />
-        <CustomInput
-          label="Password"
-          id="password"
-          v-model="password.password"
-          class="oneInput"
-          :disabled="!editMode"
-        />
+        <div class="p-inputgroup">
+          <CustomInput
+            label="Password"
+            id="password"
+            v-model="password.password"
+            class="oneInput"
+            :disabled="!editMode"
+            type="password"
+            inputId="passwordInput"
+          />
+          <Button
+            icon="pi pi-copy"
+            class="copyButton"
+            v-on:click="copyPasswordToClipboard"
+          />
+        </div>
+
         <CustomInput
           label="Url"
           id="url"
@@ -48,9 +58,17 @@
         v-if="!editMode"
         label="Edit"
         v-on:click="() => (editMode = true)"
-        class="saveButton"
+        class="editButton"
       />
-      <Button v-else label="Save" v-on:click="save" class="saveButton" />
+      <div v-else class="buttonCont">
+        <Button
+          v-if="editMode"
+          label="Cancel"
+          class="p-button-secondary cancelButton"
+          v-on:click="() => (editMode = false)"
+        />
+        <Button label="Save" v-on:click="save" />
+      </div>
     </div>
   </div>
 </template>
@@ -62,7 +80,7 @@ import CustomTextArea from "@/components/form/CustomTextArea.vue";
 import { IPasswordEntry } from "@/Models/IPasswordEntry";
 import Vue from "vue";
 import Component from "vue-class-component";
-import { post, getToastObj, httpDelete } from "@/services/fetchservice";
+import { post, getToastObj, httpDelete, put } from "@/services/fetchservice";
 
 interface IPasswordEntryDto {
   id: number;
@@ -90,6 +108,18 @@ const createDto = (pw: IPasswordEntry): IPasswordEntryDto => {
   };
 };
 
+const removeSelection = () => {
+  if (window.getSelection && window.getSelection()) {
+    if (window.getSelection()!.empty) {
+      // Chrome
+      window.getSelection()!.empty();
+    } else if (window.getSelection()!.removeAllRanges) {
+      // Firefox
+      window.getSelection()!.removeAllRanges();
+    }
+  }
+};
+
 @Component({
   components: {
     CustomInput: CustomInput,
@@ -102,6 +132,39 @@ export default class PasswordView extends Vue {
 
   mounted() {}
 
+  copyPasswordToClipboard() {
+    let passwordInput = document.getElementById("passwordInput");
+    if (passwordInput) {
+      passwordInput.removeAttribute("disabled");
+      passwordInput.setAttribute("type", "text");
+      (passwordInput as HTMLInputElement).select();
+      (passwordInput as HTMLInputElement).setSelectionRange(0, 99999); //For mobile devices/;
+
+      try {
+        var successful = document.execCommand("copy");
+        var msg = successful ? "successful" : "unsuccessful";
+        this.$toast.add({
+          severity: "info",
+          summary: "Info",
+          detail: "copied password to clipboard",
+          life: 5000
+        });
+      } catch (err) {
+        this.$toast.add({
+          severity: "error",
+          summary: "error",
+          detail: "copy failed",
+          life: 5000
+        });
+      }
+      removeSelection();
+      (passwordInput as HTMLInputElement).setSelectionRange(0, 0);
+      passwordInput.blur();
+      passwordInput.setAttribute("disabled", "disabled");
+      passwordInput.setAttribute("type", "password");
+    }
+  }
+
   async addNewPassword() {
     if (this.password && store.state.selectedCategory) {
       return await post<IPasswordEntryDto, string>(
@@ -112,21 +175,34 @@ export default class PasswordView extends Vue {
     }
   }
   async save() {
+    let res = null;
     if (this.storedData.passwordIsNew) {
-      const res = await this.addNewPassword();
-      if (res) {
-        this.$toast.add(getToastObj(res));
-        const updateRes = await store.updateCategory(
-          this.storedData.selectedCategory!.id
+      res = await this.addNewPassword();
+    } else {
+      if (this.password) {
+        res = await put<IPasswordEntryDto, string>(
+          "PasswordEntry/update",
+          createDto(this.password),
+          true
         );
-        if (updateRes) {
-          if (updateRes.type !== "success") {
-            this.$toast.add(getToastObj(updateRes as any));
-          }
-        }
       }
     }
-    store.state.selectedPassword = this.password;
+    if (res) {
+      this.$toast.add(getToastObj(res));
+      const pwId = this.password ? this.password.id : -1;
+      const updateRes = await store.updateCategory(
+        this.storedData.selectedCategory!.id,
+        store.state.passwordIsNew
+      );
+      if (updateRes) {
+        if (updateRes.type !== "success") {
+          this.$toast.add(getToastObj(updateRes as any));
+        }
+      }
+      store.state.selectedPassword =
+        store.state.selectedCategory!.passwords.find(pw => (pw.id = pwId)) ||
+        null;
+    }
   }
 
   async deletePw() {
@@ -162,7 +238,12 @@ export default class PasswordView extends Vue {
   margin-top: 20px;
 }
 
-.saveButton {
+.buttonCont {
+  margin-top: 10px;
+  float: right;
+}
+
+.editButton {
   margin-top: 10px;
   float: right;
 }
@@ -174,5 +255,17 @@ export default class PasswordView extends Vue {
 .deleteButton {
   float: left;
   margin-top: 10px;
+}
+
+.cancelButton {
+  margin-right: 10px;
+}
+
+.copyButton {
+  margin-top: auto;
+}
+
+#password {
+  width: 100%;
 }
 </style>

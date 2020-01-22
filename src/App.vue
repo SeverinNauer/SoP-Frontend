@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view />
-    <Toast position="bottomright" />
+    <Toast position="bottomright" class="toast" />
   </div>
 </template>
 
@@ -40,5 +40,11 @@ export default Vue.extend({
 
 body {
   margin: 0px;
+}
+
+.toast {
+  width: auto !important;
+  white-space: pre;
+  text-align: left;
 }
 </style>

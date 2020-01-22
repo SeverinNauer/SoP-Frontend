@@ -6,6 +6,7 @@
       v-model="inputVal"
       class="input"
       :disabled="disabled"
+      :id="inputId"
     />
   </div>
 </template>
@@ -19,7 +20,8 @@ import Component from "vue-class-component";
     label: String,
     value: String,
     type: String,
-    disabled: Boolean
+    disabled: Boolean,
+    inputId: String
   }
 })
 export default class CustomInput extends Vue {
@@ -45,5 +47,10 @@ export default class CustomInput extends Vue {
   margin: 5px;
   margin-left: 0px;
   color: rgb(0, 0, 0, 0.55);
+}
+#passwordInput {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border: 1px solid #a6a6a6;
 }
 </style>

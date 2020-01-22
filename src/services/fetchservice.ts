@@ -16,10 +16,25 @@ interface IError {
   error: string;
 }
 
-export interface IResponse<T> {
-  type: "success" | "error" | "serverError";
-  response: string | T | IError;
+interface ValErrors {
+  [key: string]: Array<string>;
 }
+
+interface IValidationError {
+  title: string;
+  errors: ValErrors;
+}
+
+export interface IResponse<T> {
+  type: "success" | "error" | "serverError" | "validationError";
+  response: string | T | IError | IValidationError;
+}
+
+const isValidationError = (
+  error: string | IError | IValidationError
+): error is IValidationError => {
+  return (error as IValidationError).errors !== undefined;
+};
 
 const getDataFromResponse = async <T>(response: Response) => {
   let resString = await response.text();
@@ -88,10 +103,29 @@ const fetchMeth = async <T>(request: Request) => {
       response: (await response.json()) as IError
     } as IResponse<T>;
   }
+  const responseText = await getDataFromResponse<IError | IValidationError>(
+    response
+  );
+  if (isValidationError(responseText)) {
+    return {
+      type: "validationError",
+      response: responseText
+    } as IResponse<T>;
+  }
   return {
     type: "error",
-    response: await getDataFromResponse(response)
+    response: responseText
   } as IResponse<T>;
+};
+
+const getErrorStr = (errors: ValErrors) => {
+  let retString = "";
+  for (let key in errors) {
+    errors[key].forEach(error => {
+      retString += `${key}: ${error}\n`;
+    });
+  }
+  return retString;
 };
 
 export const getToastObj = (response: IResponse<string>) => {
@@ -101,6 +135,15 @@ export const getToastObj = (response: IResponse<string>) => {
       summary: "Server error",
       detail: (response.response as IError).error,
       life: 5000
+    };
+  }
+  if (response.type === "validationError") {
+    const responseObj = response.response as IValidationError;
+    return {
+      severity: "error",
+      summary: responseObj.title,
+      detail: getErrorStr(responseObj.errors)
+      // life: 5000
     };
   }
   return {
