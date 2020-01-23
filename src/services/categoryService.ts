@@ -18,6 +18,7 @@ export const fetchOneCategory = async (id: number) => {
       "Category/get?categoryId=" + id,
       true
     );
+    console.log(response);
     return response;
   }
 };

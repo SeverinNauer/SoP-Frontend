@@ -27,11 +27,7 @@
             type="password"
             inputId="passwordInput"
           />
-          <Button
-            icon="pi pi-copy"
-            class="copyButton"
-            v-on:click="copyPasswordToClipboard"
-          />
+          <Button icon="pi pi-copy" class="copyButton" v-on:click="copyPasswordToClipboard" />
         </div>
 
         <CustomInput
@@ -130,7 +126,9 @@ export default class PasswordView extends Vue {
   storedData = store.state;
   editMode = this.storedData.passwordIsNew;
 
-  mounted() {}
+  mounted() {
+
+  }
 
   copyPasswordToClipboard() {
     let passwordInput = document.getElementById("passwordInput");
@@ -194,14 +192,17 @@ export default class PasswordView extends Vue {
         this.storedData.selectedCategory!.id,
         store.state.passwordIsNew
       );
+      console.log(store.state.selectedCategory);
       if (updateRes) {
         if (updateRes.type !== "success") {
           this.$toast.add(getToastObj(updateRes as any));
+        } else {
+          store.state.selectedPassword =
+            store.state.selectedCategory!.passwords.find(
+              pw => (pw.id = pwId)
+            ) || null;
         }
       }
-      store.state.selectedPassword =
-        store.state.selectedCategory!.passwords.find(pw => (pw.id = pwId)) ||
-        null;
     }
   }
 
